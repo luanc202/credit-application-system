@@ -1,11 +1,27 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+buildscript {
+	dependencies {
+		classpath 'org.flywaydb:flyway-core:9.16.3'
+		classpath 'org.flywaydb:flyway-mysql:9.16.3'
+		classpath 'org.mariadb.jdbc:mariadb-java-client:3.1.4'
+	}
+}
+
 plugins {
 	id 'org.springframework.boot' version '3.2.2'
 	id 'io.spring.dependency-management' version '1.1.4'
 	id 'org.jetbrains.kotlin.jvm' version '1.9.22'
 	id 'org.jetbrains.kotlin.plugin.spring' version '1.9.22'
 	id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.22'
+	id "org.flywaydb.flyway" version "10.8.1"
+}
+
+flyway {
+	url = 'jdbc:mariadb://localhost:3306/teste'
+	user = 'teste'
+	password = 'teste'
+	schemas = ['cliente', 'credit']
 }
 
 group = 'br.com.luan'
@@ -30,6 +46,7 @@ dependencies {
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
+
 
 tasks.withType(KotlinCompile) {
 	kotlinOptions {
