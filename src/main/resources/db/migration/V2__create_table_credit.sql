@@ -1,4 +1,4 @@
-CREATE TABLE credit (
+CREATE TABLE IF NOT EXISTS credit (
   id VARCHAR(255) NOT NULL,
    credit_code BINARY(16) NOT NULL,
    credit_value DECIMAL NULL,

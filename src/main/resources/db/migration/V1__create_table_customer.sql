@@ -1,4 +1,4 @@
-CREATE TABLE cliente (
+CREATE TABLE IF NOT EXISTS cliente (
   id VARCHAR(255) NOT NULL,
    first_name VARCHAR(255) NOT NULL,
    last_name VARCHAR(255) NOT NULL,
