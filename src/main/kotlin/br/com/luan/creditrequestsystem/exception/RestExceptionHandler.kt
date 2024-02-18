@@ -1,5 +1,6 @@
 package br.com.luan.creditrequestsystem.exception
 
+import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.FieldError
@@ -14,8 +15,7 @@ class RestExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handlerValidException(ex: MethodArgumentNotValidException): ResponseEntity<ExceptionDetails> {
         val errors: MutableMap<String, String?> = HashMap()
-        ex.bindingResult.allErrors.stream().forEach{
-            error: ObjectError ->
+        ex.bindingResult.allErrors.stream().forEach { error: ObjectError ->
             val fieldName: String = (error as FieldError).field
             val messageError: String? = error.defaultMessage
             errors[fieldName] = messageError
@@ -28,6 +28,19 @@ class RestExceptionHandler {
                 exception = ex.objectName.toString(),
                 details = errors
             ), HttpStatus.BAD_REQUEST
+        )
+    }
+
+    @ExceptionHandler(DataAccessException::class)
+    fun handlerValidException(ex: DataAccessException): ResponseEntity<ExceptionDetails> {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+            ExceptionDetails(
+                title = "Conflict. Consult the logs.",
+                timestamp = LocalDateTime.now(),
+                status = HttpStatus.CONFLICT.value(),
+                exception = ex.javaClass.toString(),
+                details = mutableMapOf(ex.cause.toString() to ex.message)
+            )
         )
     }
 }
