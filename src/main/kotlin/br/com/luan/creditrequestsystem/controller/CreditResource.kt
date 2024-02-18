@@ -31,7 +31,7 @@ class CreditResource(
     }
 
     @GetMapping("/{creditCode}")
-    fun findByCreditCode(@RequestParam(value = "customerId") customerId: String, @PathVariable creditCode: UUID): ResponseEntity<CreditView> {
+    fun findByCreditCode(@RequestParam(value = "customerId") customerId: String, @PathVariable creditCode: String): ResponseEntity<CreditView> {
         val credit: Credit = this.creditService.findByCreditCode(customerId, creditCode)
         return ResponseEntity.status(HttpStatus.OK).body(CreditView(credit))
     }

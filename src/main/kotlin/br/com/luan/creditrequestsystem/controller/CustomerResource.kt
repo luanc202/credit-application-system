@@ -20,7 +20,7 @@ class CustomerResource(
     }
 
     @GetMapping("/{id}")
-    fun findById(id: String): ResponseEntity<CustomerView> {
+    fun findById(@PathVariable id: String): ResponseEntity<CustomerView> {
         val customer = this.customerService.findById(id)
         return ResponseEntity.status(HttpStatus.OK).body(CustomerView(customer))
     }

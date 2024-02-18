@@ -2,7 +2,6 @@ package br.com.luan.creditrequestsystem.dto
 
 import br.com.luan.creditrequestsystem.entity.Credit
 import br.com.luan.creditrequestsystem.entity.Customer
-import org.aspectj.weaver.IntMap
 import java.math.BigDecimal
 import java.time.LocalDate
 

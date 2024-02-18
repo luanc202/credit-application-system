@@ -5,7 +5,7 @@ import java.math.BigDecimal
 import java.util.UUID
 
 data class CreditViewList (
-    val creditCode: UUID,
+    val creditCode: String,
     val creditValue: BigDecimal,
     val numberOfInstallments: Int
 ) {
