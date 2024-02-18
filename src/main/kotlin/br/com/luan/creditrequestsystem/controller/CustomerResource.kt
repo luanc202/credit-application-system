@@ -27,6 +27,7 @@ class CustomerResource(
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteCustomer(@PathVariable id: String) =
         this.customerService.delete(id)
 
