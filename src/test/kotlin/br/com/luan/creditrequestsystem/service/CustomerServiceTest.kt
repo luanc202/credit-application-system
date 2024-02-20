@@ -2,6 +2,7 @@ package br.com.luan.creditrequestsystem.service
 
 import br.com.luan.creditrequestsystem.entity.Address
 import br.com.luan.creditrequestsystem.entity.Customer
+import br.com.luan.creditrequestsystem.exception.BusinessException
 import br.com.luan.creditrequestsystem.repository.CreditRepository
 import br.com.luan.creditrequestsystem.repository.CustomerRepository
 import br.com.luan.creditrequestsystem.service.imp.CustomerService
@@ -47,6 +48,18 @@ class CustomerServiceTest {
         Assertions.assertThat(actual).isNotNull
         Assertions.assertThat(actual).isSameAs(fakeCustomer)
         Assertions.assertThat(actual).isExactlyInstanceOf(Customer::class.java)
+        verify(exactly = 1) { customerRepository.findById(fakeId) }
+    }
+
+    @Test
+    fun `should not find customer by invalid id and throw BusinessException` () {
+        val fakeId: String = UUID.randomUUID().toString();
+
+        every { customerRepository.findById(fakeId) } returns Optional.empty()
+
+        Assertions.assertThatExceptionOfType(BusinessException::class.java)
+            .isThrownBy { customerService.findById(fakeId) }
+            .withMessage("Id $fakeId not found")
         verify(exactly = 1) { customerRepository.findById(fakeId) }
     }
 
