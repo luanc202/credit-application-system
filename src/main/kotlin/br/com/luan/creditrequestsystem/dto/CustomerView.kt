@@ -2,6 +2,7 @@ package br.com.luan.creditrequestsystem.dto
 
 import br.com.luan.creditrequestsystem.entity.Customer
 import java.math.BigDecimal
+import java.util.UUID
 
 class CustomerView(
     val firstName: String,
@@ -10,6 +11,7 @@ class CustomerView(
     val income: BigDecimal,
     val zipCode: String,
     val street: String,
+    val id: UUID?
 ) {
     constructor(customer: Customer) : this(
         firstName = customer.firstName,
@@ -18,5 +20,6 @@ class CustomerView(
         income = customer.income,
         zipCode = customer.address.zipCode,
         street = customer.address.street,
+        id = customer.id
     )
 }
