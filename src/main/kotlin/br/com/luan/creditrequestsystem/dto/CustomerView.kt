@@ -10,6 +10,7 @@ class CustomerView(
     val cpf: String,
     val income: BigDecimal,
     val zipCode: String,
+    val email: String,
     val street: String,
     val id: UUID?
 ) {
@@ -17,6 +18,7 @@ class CustomerView(
         firstName = customer.firstName,
         lastName = customer.lastName,
         cpf = customer.cpf,
+        email = customer.email,
         income = customer.income,
         zipCode = customer.address.zipCode,
         street = customer.address.street,
