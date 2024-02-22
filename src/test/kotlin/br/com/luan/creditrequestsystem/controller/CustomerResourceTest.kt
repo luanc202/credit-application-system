@@ -19,34 +19,41 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.math.BigDecimal
-import java.util.UUID
+import java.util.*
 
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @ContextConfiguration
 class CustomerResourceTest {
-    @Autowired private lateinit var customerRepository: CustomerRepository
-    @Autowired private lateinit var mockMvc: MockMvc
-    @Autowired private lateinit var objectMapper: ObjectMapper
+    @Autowired
+    private lateinit var customerRepository: CustomerRepository
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+    @Autowired
+    private lateinit var objectMapper: ObjectMapper
 
     companion object {
         const val URL: String = "/api/customers"
     }
 
-    @BeforeEach fun setup() = customerRepository.deleteAll()
+    @BeforeEach
+    fun setup() = customerRepository.deleteAll()
 
-    @AfterEach fun tearDown() = customerRepository.deleteAll()
+    @AfterEach
+    fun tearDown() = customerRepository.deleteAll()
 
     @Test
     fun `should create a customer and return 201 status`() {
         val customerDto: CustomerDto = builderCustomerDto()
         val valueAsString: String = objectMapper.writeValueAsString(customerDto)
 
-        mockMvc.perform(MockMvcRequestBuilders
-            .post(URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(valueAsString))
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .post(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Luan"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Sobrenome"))
@@ -65,10 +72,12 @@ class CustomerResourceTest {
         val customerDto: CustomerDto = builderCustomerDto()
         val valueAsString: String = objectMapper.writeValueAsString(customerDto)
 
-        mockMvc.perform(MockMvcRequestBuilders
-            .post(URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(valueAsString))
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .post(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
             .andExpect(MockMvcResultMatchers.status().isConflict)
             .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Conflict. Consult the logs."))
             .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
@@ -86,10 +95,12 @@ class CustomerResourceTest {
         val customerDto: CustomerDto = builderCustomerDto(firstName = "")
         val valueAsString: String = objectMapper.writeValueAsString(customerDto)
 
-        mockMvc.perform(MockMvcRequestBuilders
-            .post(URL)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(valueAsString))
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .post(URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Bad Request. Consult the logs."))
             .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
@@ -106,8 +117,10 @@ class CustomerResourceTest {
     fun `should find customer by id and return status 200`() {
         val customer: Customer = customerRepository.save(builderCustomerDto().toEntity())
 
-        mockMvc.perform(MockMvcRequestBuilders.get("$URL/${customer.id}")
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("$URL/${customer.id}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Luan"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Sobrenome"))
@@ -124,8 +137,42 @@ class CustomerResourceTest {
     fun `should not find customer with invalid id and return status 400`() {
         val invalidId: String = UUID.randomUUID().toString()
 
-        mockMvc.perform(MockMvcRequestBuilders.get("$URL/${invalidId}")
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("$URL/${invalidId}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Conflict. Consult the logs."))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value("class br.com.luan.creditrequestsystem.exception.BusinessException")
+            )
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should delete customer by id and return 200`() {
+        val customer: Customer = customerRepository.save(builderCustomerDto().toEntity())
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("$URL/${customer.id}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isNoContent)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should not delete customer by invalid id and return 404`() {
+        val invalidId: UUID = UUID.randomUUID()
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("$URL/${invalidId}")
+                .accept(MediaType.APPLICATION_JSON)
+        )
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Conflict. Consult the logs."))
             .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
