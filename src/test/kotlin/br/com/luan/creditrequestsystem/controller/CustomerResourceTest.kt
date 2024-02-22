@@ -154,7 +154,7 @@ class CustomerResourceTest {
     }
 
     @Test
-    fun `should delete customer by id and return 200`() {
+    fun `should delete customer by id and return 204`() {
         val customer: Customer = customerRepository.save(builderCustomerDto().toEntity())
 
         mockMvc.perform(
@@ -182,6 +182,28 @@ class CustomerResourceTest {
                     .value("class br.com.luan.creditrequestsystem.exception.BusinessException")
             )
             .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should update a customer and return status 200`() {
+        val customer: Customer = customerRepository.save(builderCustomerDto().toEntity())
+        val customerUpdateDto: CustomerUpdateDto = builderCustomerUpdateDto()
+        val valueAsString: String = objectMapper.writeValueAsString(customerUpdateDto)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("$URL?customerId=${customer.id}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(valueAsString)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Luan Atualizado"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Sobrenome Atualizado"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("85048101006"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("luan@sales.com"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("6000.0"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("77777777"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua Atualizada"))
             .andDo(MockMvcResultHandlers.print())
     }
 
