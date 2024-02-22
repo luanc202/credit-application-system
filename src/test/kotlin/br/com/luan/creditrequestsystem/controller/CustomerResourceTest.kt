@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import java.math.BigDecimal
+import java.util.UUID
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -117,6 +118,24 @@ class CustomerResourceTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua do Lado, Av. Norte"))
             .andDo(MockMvcResultHandlers.print())
 
+    }
+
+    @Test
+    fun `should not find customer with invalid id and return status 400`() {
+        val invalidId: String = UUID.randomUUID().toString()
+
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/${invalidId}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Conflict. Consult the logs."))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value("class br.com.luan.creditrequestsystem.exception.BusinessException")
+            )
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
     }
 
     private fun builderCustomerDto(
