@@ -22,7 +22,7 @@ class CreditResource(
         credit.validDayFirstInstallment()
         val savedCredit: Credit = this.creditService.save(credit)
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body("Credit ${credit.creditCode} of Customer ${credit.customer?.firstName} saved")
+            .body("Credit ${savedCredit.creditCode} of Customer ${savedCredit.customer?.firstName} saved")
     }
 
     @GetMapping

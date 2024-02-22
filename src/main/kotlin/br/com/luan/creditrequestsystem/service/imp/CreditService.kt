@@ -4,7 +4,6 @@ import br.com.luan.creditrequestsystem.entity.Credit
 import br.com.luan.creditrequestsystem.repository.CreditRepository
 import br.com.luan.creditrequestsystem.service.ICreditService
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class CreditService(
