@@ -9,6 +9,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 import java.util.stream.Collectors
 
 @RestController
@@ -26,7 +27,7 @@ class CreditResource(
     }
 
     @GetMapping
-    fun findAllByCustomer(@RequestParam(value = "customerId") customerId: String): ResponseEntity<List<CreditViewList>> {
+    fun findAllByCustomer(@RequestParam(value = "customerId") customerId: UUID): ResponseEntity<List<CreditViewList>> {
         val creditViewList = this.creditService.findAllByCustomer(customerId).stream()
             .map { credit: Credit -> CreditViewList(credit) }
             .collect(Collectors.toList())
@@ -35,8 +36,8 @@ class CreditResource(
 
     @GetMapping("/{creditCode}")
     fun findByCreditCode(
-        @RequestParam(value = "customerId") customerId: String,
-        @PathVariable creditCode: String
+        @RequestParam(value = "customerId") customerId: UUID,
+        @PathVariable creditCode: UUID
     ): ResponseEntity<CreditView> {
         val credit: Credit = this.creditService.findByCreditCode(customerId, creditCode)
         return ResponseEntity.status(HttpStatus.OK).body(CreditView(credit))

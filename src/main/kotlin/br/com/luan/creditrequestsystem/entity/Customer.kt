@@ -2,6 +2,7 @@ package br.com.luan.creditrequestsystem.entity
 
 import jakarta.persistence.*
 import java.math.BigDecimal
+import java.util.UUID
 
 @Entity
 @Table(name = "Cliente")
@@ -15,5 +16,5 @@ data class Customer (
     @Column(nullable = false) @Embedded var address: Address = Address(),
     @Column(nullable = false) @OneToMany(fetch = FetchType.LAZY, cascade = arrayOf(CascadeType.REMOVE, CascadeType.PERSIST),
         mappedBy = "customer") var credits: List<Credit> = mutableListOf(),
-    @Id @GeneratedValue(strategy = GenerationType.UUID) val id: String? = null,
+    @Id @GeneratedValue(strategy = GenerationType.UUID) val id: UUID? = null,
     )

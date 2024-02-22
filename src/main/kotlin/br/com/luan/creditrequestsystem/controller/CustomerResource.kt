@@ -8,6 +8,7 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/customers")
@@ -21,19 +22,19 @@ class CustomerResource(
     }
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: String): ResponseEntity<CustomerView> {
+    fun findById(@PathVariable id: UUID): ResponseEntity<CustomerView> {
         val customer = this.customerService.findById(id)
         return ResponseEntity.status(HttpStatus.OK).body(CustomerView(customer))
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteCustomer(@PathVariable id: String) =
+    fun deleteCustomer(@PathVariable id: UUID) =
         this.customerService.delete(id)
 
     @PatchMapping
     fun updateCustomer(
-        @RequestParam(value = "customerId") id: String,
+        @RequestParam(value = "customerId") id: UUID,
         @RequestBody @Valid customerUpdateDto: CustomerUpdateDto
     ): ResponseEntity<CustomerView> {
         val customer = this.customerService.findById(id)
