@@ -43,37 +43,37 @@ class CustomerServiceTest {
     fun `should find customer by id` () {
         val fakeId: UUID = UUID.randomUUID();
         val fakeCustomer: Customer = buildCustomer(id = fakeId)
-        every { customerRepository.findById(fakeId.toString()) } returns Optional.of(fakeCustomer)
+        every { customerRepository.findById(fakeId) } returns Optional.of(fakeCustomer)
 
         val actual: Customer = customerService.findById(fakeId)
         Assertions.assertThat(actual).isNotNull
         Assertions.assertThat(actual).isSameAs(fakeCustomer)
         Assertions.assertThat(actual).isExactlyInstanceOf(Customer::class.java)
-        verify(exactly = 1) { customerRepository.findById(fakeId.toString()) }
+        verify(exactly = 1) { customerRepository.findById(fakeId) }
     }
 
     @Test
     fun `should not find customer by invalid id and throw BusinessException` () {
         val fakeId: UUID = UUID.randomUUID();
 
-        every { customerRepository.findById(fakeId.toString()) } returns Optional.empty()
+        every { customerRepository.findById(fakeId) } returns Optional.empty()
 
         Assertions.assertThatExceptionOfType(BusinessException::class.java)
             .isThrownBy { customerService.findById(fakeId) }
             .withMessage("Id $fakeId not found")
-        verify(exactly = 1) { customerRepository.findById(fakeId.toString()) }
+        verify(exactly = 1) { customerRepository.findById(fakeId) }
     }
 
     @Test
     fun `should delete a customer by id` () {
         val fakeId: UUID = UUID.randomUUID();
         val fakeCustomer: Customer = buildCustomer(id = fakeId)
-        every { customerRepository.findById(fakeId.toString()) } returns Optional.of(fakeCustomer)
+        every { customerRepository.findById(fakeId) } returns Optional.of(fakeCustomer)
         every { customerRepository.delete(fakeCustomer) } just runs
 
         customerService.delete(fakeId)
 
-        verify(exactly = 1) { customerRepository.findById(fakeId.toString()) }
+        verify(exactly = 1) { customerRepository.findById(fakeId) }
         verify(exactly = 1) { customerRepository.delete(fakeCustomer) }
     }
 

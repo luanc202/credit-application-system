@@ -15,7 +15,7 @@ class CustomerService(
     override fun save(customer: Customer): Customer = this.customerRepository.save(customer)
 
 
-    override fun findById(id: UUID): Customer = this.customerRepository.findById(id.toString()).orElseThrow {
+    override fun findById(id: UUID): Customer = this.customerRepository.findById(id).orElseThrow {
         throw BusinessException("Id $id not found")
     }
 

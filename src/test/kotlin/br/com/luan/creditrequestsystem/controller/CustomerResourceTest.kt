@@ -2,6 +2,7 @@ package br.com.luan.creditrequestsystem.controller
 
 import br.com.luan.creditrequestsystem.dto.CustomerDto
 import br.com.luan.creditrequestsystem.dto.CustomerUpdateDto
+import br.com.luan.creditrequestsystem.entity.Customer
 import br.com.luan.creditrequestsystem.repository.CustomerRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.AfterEach
@@ -98,6 +99,24 @@ class CustomerResourceTest {
             )
             .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
             .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `should find customer by id and return status 200`() {
+        val customer: Customer = customerRepository.save(builderCustomerDto().toEntity())
+
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/${customer.id}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Luan"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Sobrenome"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value("85048101006"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("luan@sales.com"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.income").value("2000.0"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.zipCode").value("12345678"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.street").value("Rua do Lado, Av. Norte"))
+            .andDo(MockMvcResultHandlers.print())
+
     }
 
     private fun builderCustomerDto(
